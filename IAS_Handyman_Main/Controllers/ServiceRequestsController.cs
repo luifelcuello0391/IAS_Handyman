@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using IAS_Handyman.Models;
@@ -123,6 +124,38 @@ namespace IAS_Handyman_Main.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public async Task<ActionResult> GetTechnician(int identification)
+        {
+            try
+            {
+                Technician technician = await db.Technicians.FirstOrDefaultAsync(x => x.Id == identification);
+
+                return PartialView("TechnicianData", technician);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error on ServiceRequestController.GetTechnician >> " + ex.ToString());
+            }
+
+            return PartialView("TechnicianData", null);
+        }
+
+        public async Task<ActionResult> GetTechnicians()
+        {
+            try
+            {
+                IEnumerable<Technician> technicians = await db.Technicians.ToListAsync();
+
+                return PartialView("TechnicianSelectionList", technicians);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error on ServiceRequestController.GetTechnicians >> " + ex.ToString());
+            }
+
+            return PartialView("TechnicianSelectionList", null);
         }
     }
 }

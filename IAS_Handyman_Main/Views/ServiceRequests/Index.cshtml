@@ -24,16 +24,11 @@
         </th>
 
         <th>
+            @Html.DisplayNameFor(model => model.CurrentStatus)
+        </th>
+
+        <th>
             @Html.DisplayNameFor(model => model.Description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CreationDateTime)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ModificationDateTime)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.RegisterStatus)
         </th>
         <th></th>
     </tr>
@@ -49,27 +44,41 @@
     </td>
 
     <td>
-        @Html.DisplayFor(modelItem => item.ScheduleDate)
+        @Html.Raw(item.ScheduleDate.ToString("MM-dd-yyyy"))
     </td>
+
+    @if (item.CurrentStatus != null)
+    {
+        <td>
+            @Html.DisplayFor(modelItem => item.CurrentStatus.Name)
+        </td>
+    }
+    else
+    {
+        <td>
+            @Html.Raw("Generado")
+        </td>
+    }
 
     <td>
         @Html.DisplayFor(modelItem => item.Description)
     </td>
 
-    <td>
-        @Html.DisplayFor(modelItem => item.CreationDateTime)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.ModificationDateTime)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.RegisterStatus)
-    </td>
-    <td>
-        @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
-        @Html.ActionLink("Ver detalle", "Details", new { id = item.Id }) |
-        @Html.ActionLink("Eliminar", "Delete", new { id = item.Id })
-    </td>
+    @if (@item.CurrentStatus == null || item.CurrentStatus.Id <= 2)
+    {
+        <td>
+            @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Ver detalle", "Details", new { id = item.Id }) |
+            @Html.ActionLink("Eliminar", "Delete", new { id = item.Id })
+        </td>
+    }
+    else // Statuses: 'Ejecutado'/'Cancelado'
+    {
+        <td>
+            @Html.ActionLink("Ver detalle", "Details", new { id = item.Id })
+        </td>
+    }
+
 </tr>
 }
 

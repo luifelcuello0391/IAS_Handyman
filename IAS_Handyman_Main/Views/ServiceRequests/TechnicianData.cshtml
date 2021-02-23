@@ -1,0 +1,36 @@
+﻿@model IAS_Handyman.Models.Technician
+
+@if (Model != null)
+{
+<div class="row">
+    <input id="txt_technician_id" asp-for="Id" hidden/>
+
+    <div class="row" style="margin-left:20px">
+        <table>
+            <tr>
+                <td style="padding: 0 15px 0 0">
+                    <div><b>@Html.DisplayNameFor(model => model.Identification)</b></div>
+                </td>
+
+                <td style="padding: 0 15px 0 0">
+                    <div><b>@Html.DisplayNameFor(model => model.FullName)</b></div>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="padding: 0 15px 0 0">
+                    <div>@Html.DisplayFor(model => model.Identification)</div>
+                </td>
+
+                <td style="padding: 0 15px 0 0">
+                    <div>@Html.DisplayFor(model => model.FullName)</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+}
+else
+{
+    <label>No hay información del técnico</label>
+}

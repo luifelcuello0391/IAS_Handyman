@@ -180,6 +180,8 @@
     <Content Include="Views\ServiceRequests\Details.cshtml" />
     <Content Include="Views\ServiceRequests\Edit.cshtml" />
     <Content Include="Views\ServiceRequests\Index.cshtml" />
+    <Content Include="Views\ServiceRequests\TechnicianSelectionList.cshtml" />
+    <Content Include="Views\ServiceRequests\TechnicianData.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

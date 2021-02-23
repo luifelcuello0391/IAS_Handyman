@@ -33,7 +33,7 @@ namespace IAS_Handyman.Models
         {
             get
             {
-                return IsEmergency ? "Normal" : "Emergencia";
+                return IsEmergency ? "Reparación" : "Reparación por emergencia";
             }
         }
 
@@ -44,10 +44,10 @@ namespace IAS_Handyman.Models
         public virtual Technician Responsable { get; set; }
 
         [DisplayName("Fecha y hora de inicio de la atención")]
-        public DateTime StartDateTime { get; set; }
+        public DateTime? StartDateTime { get; set; }
 
         [DisplayName("Fecha y hora de finalización de la atención")]
-        public DateTime EndDateTime { get; set; }
+        public DateTime? EndDateTime { get; set; }
 
         [DisplayName("Horas empleadas")]
         public int Hours { get; set; }

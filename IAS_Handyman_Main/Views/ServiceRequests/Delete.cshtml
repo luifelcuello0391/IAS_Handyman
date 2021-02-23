@@ -1,14 +1,23 @@
 ﻿@model IAS_Handyman.Models.ServiceRequest
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Eliminar agendamiento";
 }
 
-<h2>Delete</h2>
-
-<h3>Are you sure you want to delete this?</h3>
+<h2>Eliminar agendamiento</h2>
 <div>
-    <h4>ServiceRequest</h4>
+    <h4>Servicio # @Model.Id</h4>
+    @if (Model.CurrentStatus != null)
+    {
+        <h4>Estado actual: @Model.CurrentStatus.Name</h4>
+    }
+    else
+    {
+        <h4>Estado actual: Generado</h4>
+    }
+
+    <h3>¿Desea eliminar la información del servicio?</h3>
+
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -32,32 +41,88 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ScheduleDate)
+            @Html.Raw(Model.ScheduleDate.ToString("MM/dd/yyyy"))
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.IsEmergency)
+            @Html.Raw("Tipo de servicio")
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.IsEmergency)
+            @Html.DisplayFor(model => model.IsEmergencyString)
         </dd>
+    </dl>
 
+    <hr />
+    <h4>Información del técnico asignado</h4>
+    <hr />
+    @if (Model.Responsable != null)
+    {
+        <table>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => modelItem.Responsable.Identification)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => modelItem.Responsable.FullName)
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Model.Responsable.Identification
+                </td>
+
+                <td>
+                    @Model.Responsable.FullName
+                </td>
+            </tr>
+        </table>
+    }
+    else
+    {
+        <p>No hay técnico asignado</p>
+    }
+    <h1></h1>
+
+    <hr />
+    <h4>Información de la atención</h4>
+    <hr />
+    <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.StartDateTime)
         </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.StartDateTime)
-        </dd>
+        @if (Model.StartDateTime != null)
+        {
+            <dd>
+                @Html.DisplayFor(model => model.StartDateTime.Value)
+            </dd>
+        }
+        else
+        {
+            <dd>
+                @Html.Raw("Sin datos")
+            </dd>
+        }
 
         <dt>
             @Html.DisplayNameFor(model => model.EndDateTime)
         </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.EndDateTime)
-        </dd>
+        @if (Model.EndDateTime != null)
+        {
+            <dd>
+                @Html.DisplayFor(model => model.EndDateTime.Value)
+            </dd>
+        }
+        else
+        {
+            <dd>
+                @Html.Raw("Sin datos")
+            </dd>
+        }
 
         <dt>
             @Html.DisplayNameFor(model => model.Hours)
@@ -67,6 +132,12 @@
             @Html.DisplayFor(model => model.Hours)
         </dd>
 
+    </dl>
+
+    <hr />
+    <h4>Información adicional</h4>
+    <hr />
+    <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.CreationDateTime)
         </dt>
@@ -88,17 +159,17 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.RegisterStatus)
+            @Html.DisplayFor(model => model.RegisterStatusName)
         </dd>
-
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            <input type="submit" value="Eliminar" class="btn btn-default btn-danger" /> |
+            @Html.ActionLink("Regresar", "Index")
         </div>
     }
 </div>

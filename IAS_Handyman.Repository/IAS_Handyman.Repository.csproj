@@ -126,6 +126,10 @@
     <Compile Include="Migrations\202102230003049_DatabaseStartUp.designer.cs">
       <DependentUpon>202102230003049_DatabaseStartUp.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202102231328148_ServiceExecutionDatesNullable.cs" />
+    <Compile Include="Migrations\202102231328148_ServiceExecutionDatesNullable.designer.cs">
+      <DependentUpon>202102231328148_ServiceExecutionDatesNullable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -142,6 +146,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202102230003049_DatabaseStartUp.resx">
       <DependentUpon>202102230003049_DatabaseStartUp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102231328148_ServiceExecutionDatesNullable.resx">
+      <DependentUpon>202102231328148_ServiceExecutionDatesNullable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
