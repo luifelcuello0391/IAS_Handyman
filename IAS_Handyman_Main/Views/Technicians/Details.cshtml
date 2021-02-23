@@ -1,0 +1,61 @@
+﻿@model IAS_Handyman.Models.Technician
+
+@{
+    ViewBag.Title = "Detalle del técnico";
+}
+
+<h2>Técnico # @Model.Id</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Identification)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Identification)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FullName)
+        </dd>
+    </dl>
+
+    <hr/>
+    <h4>Información adicional</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CreationDateTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreationDateTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ModificationDateTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ModificationDateTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RegisterStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RegisterStatusName)
+        </dd>
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Regresar", "Index")
+</p>

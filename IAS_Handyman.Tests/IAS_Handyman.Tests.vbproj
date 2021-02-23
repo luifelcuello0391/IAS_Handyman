@@ -115,12 +115,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\IAS_Handyman\IAS_Handyman.vbproj">
-      <Project>{DAFCA8AB-861E-4270-A3AC-73FC40FDCE2A}</Project>
-      <Name>IAS_Handyman</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

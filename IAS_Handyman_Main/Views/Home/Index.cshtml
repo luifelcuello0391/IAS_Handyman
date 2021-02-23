@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>IAS Handyman</h1>
+    <p class="lead">Ofrecemos los mejores servicios de reparación para hogares.</p>
+    <p class="lead">Permítanos tener el placer de atenderle.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Técnicos</h2>
+        <p>
+            Podrá administrar la información de los técnicos (Consultar, Crear, Editar y Eliminar).
+        </p>
+        <p>
+            @Html.ActionLink("Ir >>>", "Index", "Technicians", new { area = "" }, new { @class = "btn btn-default" })
+        </p>
+        <!--<p><a class="btn btn-default" asp-action="Index" asp-controller="Technicians">Ir &raquo;</a></p>-->
+    </div>
+
+    <div class="col-md-4">
+        <h2>Servicios</h2>
+        <p>
+            Podrá agendar servicios de reparación; así como administrar su información.
+        </p>
+        <p>
+            @Html.ActionLink("Ir >>>", "Index", "ServiceRequests", new { area = "" }, new { @class = "btn btn-default" })
+        </p>
+        <!--<p><a class="btn btn-default" asp-action="Index" asp-controller="ServiceRequests">Ir &raquo;</a></p>-->
+    </div>
+
+    <div class="col-md-4">
+        <h2>Reportes</h2>
+        <p>
+            Obtenga el reporte de las horas trabajadas por cada uno de los técnicos.
+        </p>
+        <p>
+            @Html.ActionLink("Ir >>>", "Index", "Reports", new { area = "" }, new { @class = "btn btn-default" })
+        </p>
+        <!--<p><a class="btn btn-default" asp-action="Index" asp-controller="Reports">Ir &raquo;</a></p>-->
+    </div>
+</div>
