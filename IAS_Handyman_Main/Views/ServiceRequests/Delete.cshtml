@@ -58,27 +58,23 @@
     <hr />
     @if (Model.Responsable != null)
     {
-        <table>
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => modelItem.Responsable.Identification)
-                </td>
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(modelItem => modelItem.Responsable.Identification)
+            </dt>
 
-                <td>
-                    @Html.DisplayFor(modelItem => modelItem.Responsable.FullName)
-                </td>
-            </tr>
+            <dd>
+                @Html.DisplayFor(modelItem => modelItem.Responsable.Identification)
+            </dd>
 
-            <tr>
-                <td>
-                    @Model.Responsable.Identification
-                </td>
+            <dt>
+                @Html.DisplayNameFor(modelItem => modelItem.Responsable.FullName)
+            </dt>
 
-                <td>
-                    @Model.Responsable.FullName
-                </td>
-            </tr>
-        </table>
+            <dd>
+                @Html.DisplayFor(modelItem => modelItem.Responsable.FullName)
+            </dd>
+        </dl>
     }
     else
     {

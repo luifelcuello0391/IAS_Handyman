@@ -11,6 +11,8 @@ namespace IAS_Handyman.Models
 {
     public class ServiceRequest : BaseModelData
     {
+        public ServiceRequest (){}
+
         // Table auto incremental id
         [Key]
         public int Id { get; set; }
@@ -33,12 +35,14 @@ namespace IAS_Handyman.Models
         {
             get
             {
-                return IsEmergency ? "Reparación" : "Reparación por emergencia";
+                return !IsEmergency ? "Reparación" : "Reparación por emergencia";
             }
         }
 
         [DisplayName("Estado del servicio")]
         public virtual ServiceStatus CurrentStatus { get; set; }
+
+        public int? Responsable_Id { get; set; }
 
         [DisplayName("Técnico asignado")]
         public virtual Technician Responsable { get; set; }
@@ -49,7 +53,16 @@ namespace IAS_Handyman.Models
         [DisplayName("Fecha y hora de finalización de la atención")]
         public DateTime? EndDateTime { get; set; }
 
+        [NotMapped]
+        public string StartTime { get; set; }
+
+        [NotMapped]
+        public string EndTime { get; set; }
+
         [DisplayName("Horas empleadas")]
         public int Hours { get; set; }
+
+        [NotMapped]
+        public int? SelectedTechnicianId { get; set; }
     }
 }

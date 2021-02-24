@@ -48,10 +48,23 @@ namespace IAS_Handyman_Main.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Code,Description,ScheduleDate,IsEmergency,StartDateTime,EndDateTime,Hours,CreationDateTime,ModificationDateTime,RegisterStatus")] ServiceRequest serviceRequest)
+        public ActionResult Create([Bind(Include = "Id,Code,Description,ScheduleDate,IsEmergency,StartDateTime,EndDateTime,Hours,CreationDateTime,ModificationDateTime,RegisterStatus,SelectedTechnicianId")] ServiceRequest serviceRequest)
         {
             if (ModelState.IsValid)
             {
+                if(serviceRequest.SelectedTechnicianId > 0)
+                {
+                    serviceRequest.Responsable = db.Technicians.FirstOrDefault(x => x.Id == serviceRequest.SelectedTechnicianId);
+                }
+
+                if (serviceRequest.Responsable != null)
+                {
+                    if (serviceRequest.CurrentStatus == null)
+                    {
+                        serviceRequest.CurrentStatus = db.ServiceStatuses.FirstOrDefault(x => x.Id == 1);
+                    }
+                }
+
                 db.Services.Add(serviceRequest);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -72,6 +85,12 @@ namespace IAS_Handyman_Main.Controllers
             {
                 return HttpNotFound();
             }
+
+            if(serviceRequest.Responsable != null)
+            {
+                serviceRequest.SelectedTechnicianId = serviceRequest.Responsable.Id;
+            }
+
             return View(serviceRequest);
         }
 
@@ -80,11 +99,51 @@ namespace IAS_Handyman_Main.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Code,Description,ScheduleDate,IsEmergency,StartDateTime,EndDateTime,Hours,CreationDateTime,ModificationDateTime,RegisterStatus")] ServiceRequest serviceRequest)
+        public ActionResult Edit([Bind(Include = "Id,Code,Description,ScheduleDate,IsEmergency,StartDateTime,EndDateTime,Hours,CreationDateTime,ModificationDateTime,RegisterStatus,SelectedTechnicianId")] ServiceRequest serviceRequest)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(serviceRequest).State = EntityState.Modified;
+                if (serviceRequest.SelectedTechnicianId > 0)
+                {
+                    if(serviceRequest.Responsable == null || serviceRequest.Responsable.Id != serviceRequest.SelectedTechnicianId)
+                    {
+                        serviceRequest.Responsable = db.Technicians.FirstOrDefault(x => x.Id == serviceRequest.SelectedTechnicianId);
+                    }
+                }
+
+                if (serviceRequest.Responsable != null)
+                {
+                    if (serviceRequest.StartDateTime != null && serviceRequest.EndDateTime != null)
+                    {
+                        // Assigns the status "Ejecutado"
+                        serviceRequest.CurrentStatus = db.ServiceStatuses.FirstOrDefault(x => x.Id == 2);
+                    }
+                    else if(serviceRequest.CurrentStatus == null)
+                    {
+                        // Assigns the status "Asignado"
+                        serviceRequest.CurrentStatus = db.ServiceStatuses.FirstOrDefault(x => x.Id == 1);
+                    }
+                }
+
+                var data = db.Services.Find(serviceRequest.Id);
+
+                if (data != null)
+                {
+                    data.Hours = serviceRequest.Hours;
+                    data.IsEmergency = serviceRequest.IsEmergency;
+                    data.ModificationDateTime = serviceRequest.ModificationDateTime;
+                    data.Responsable = serviceRequest.Responsable;
+                    data.ScheduleDate = serviceRequest.ScheduleDate;
+                    data.SelectedTechnicianId = serviceRequest.SelectedTechnicianId;
+                    data.StartDateTime = serviceRequest.StartDateTime;
+                    data.EndDateTime = serviceRequest.EndDateTime;
+                    data.CurrentStatus = serviceRequest.CurrentStatus;
+                    data.Code = serviceRequest.Code;
+                    data.Description = serviceRequest.Description;
+                    data.CreationDateTime = serviceRequest.CreationDateTime;
+                    data.RegisterStatus = serviceRequest.RegisterStatus;
+                }
+                
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -126,11 +185,11 @@ namespace IAS_Handyman_Main.Controllers
             base.Dispose(disposing);
         }
 
-        public async Task<ActionResult> GetTechnician(int identification)
+        public ActionResult GetTechnician(int identification)
         {
             try
             {
-                Technician technician = await db.Technicians.FirstOrDefaultAsync(x => x.Id == identification);
+                Technician technician = db.Technicians.FirstOrDefault(x => x.Id == identification);
 
                 return PartialView("TechnicianData", technician);
             }
@@ -156,6 +215,24 @@ namespace IAS_Handyman_Main.Controllers
             }
 
             return PartialView("TechnicianSelectionList", null);
+        }
+
+        public string CancelService(int identification)
+        {
+            if (identification > 0)
+            {
+                var data = db.Services.Find(identification);
+
+                if (data != null)
+                {
+                    data.CurrentStatus = db.ServiceStatuses.FirstOrDefault(x => x.Id == 3);
+                }
+
+                db.SaveChanges();
+                return "OK";
+            }
+
+            return "Error: Identificación no encontrada.";
         }
     }
 }

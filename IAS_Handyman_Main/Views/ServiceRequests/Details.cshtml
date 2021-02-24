@@ -57,31 +57,27 @@
     <hr />
     @if (Model.Responsable != null)
     {
-        <table>
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => modelItem.Responsable.Identification)
-                </td>
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(modelItem => modelItem.Responsable.Identification)
+            </dt>
 
-                <td>
-                    @Html.DisplayFor(modelItem => modelItem.Responsable.FullName)
-                </td>
-            </tr>
+            <dd>
+                @Html.DisplayFor(modelItem => modelItem.Responsable.Identification)
+            </dd>
 
-            <tr>
-                <td>
-                    @Model.Responsable.Identification
-                </td>
+            <dt>
+                @Html.DisplayNameFor(modelItem => modelItem.Responsable.FullName)
+            </dt>
 
-                <td>
-                    @Model.Responsable.FullName
-                </td>
-            </tr>
-        </table>
+            <dd>
+                @Html.DisplayFor(modelItem => modelItem.Responsable.FullName)
+            </dd>
+        </dl>
     }
     else
     {
-       <p>No hay técnico asignado</p>
+        <p>No hay técnico asignado</p>
     }
     <h1></h1>
 
@@ -162,7 +158,19 @@
         </dd>
     </dl>
 </div>
-<p>
-    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Regresar", "Index")
-</p>
+
+@if (Model.CurrentStatus == null || Model.CurrentStatus.Id < 2)
+{
+    <p>
+        @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
+        @Html.ActionLink("Regresar", "Index")
+    </p>
+}
+else
+{
+    <p>
+        @Html.ActionLink("Regresar", "Index")
+    </p>
+}
+
+

@@ -12,17 +12,20 @@ namespace IAS_Handyman.Repository
     {
         public DatabaseContext() : base("IASHandymanContext")
         {
+            this.Configuration.LazyLoadingEnabled = true;
+            this.Configuration.ProxyCreationEnabled = true;
         }
 
-        //public DatabaseContext(DbContextOptions<DatabaseContext> options)
-        //    : base(options)
-        //{
-        //}
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ServiceRequest>()
+                .HasOptional(r => r.Responsable)
+                .WithMany(r => r.Services)
+                .HasForeignKey(r => r.Responsable_Id)
+                .WillCascadeOnDelete(false);
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseLazyLoadingProxies();
-        //}
+            base.OnModelCreating(modelBuilder);
+        }
 
         public DbSet<Technician> Technicians { get; set; }
         public DbSet<ServiceRequest> Services { get; set; }

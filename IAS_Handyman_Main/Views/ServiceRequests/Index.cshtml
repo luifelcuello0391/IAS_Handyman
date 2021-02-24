@@ -9,6 +9,7 @@
 <p>
     @Html.ActionLink("Agendar servicio", "Create")
 </p>
+<p><b>Nota:</b> Sólo se podrán eliminar los servicios con estados <b>"Generado"</b> y <b>"Asignado"</b>, los servicios con cualquier otro estado, deberán ser cancelados en caso tal de no realizarse.<br/>Para gestionar o ejecutar un servicio agendado y asignado a un técnico, deberá ingresar a la edición.</p>
 <table class="table">
     <tr style="background-color:lightgray">
         <th>
@@ -25,6 +26,10 @@
 
         <th>
             @Html.DisplayNameFor(model => model.CurrentStatus)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Responsable)
         </th>
 
         <th>
@@ -57,6 +62,19 @@
     {
         <td>
             @Html.Raw("Generado")
+        </td>
+    }
+
+    @if (item.Responsable != null)
+    {
+        <td>
+            @Html.DisplayFor(modelItem => item.Responsable.FullName)
+        </td>
+    }
+    else
+    {
+        <td>
+            @Html.Raw("No asignado")
         </td>
     }
 

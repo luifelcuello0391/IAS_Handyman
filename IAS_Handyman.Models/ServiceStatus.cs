@@ -9,6 +9,8 @@ namespace IAS_Handyman.Models
 {
     public class ServiceStatus : BaseModelData
     {
+        public ServiceStatus() { }
+
         // Table auto incremental id
         [Key]
         public int Id { get; set; }
