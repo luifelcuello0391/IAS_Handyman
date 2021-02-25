@@ -9,10 +9,10 @@
 </div>
 
 <div class="row">
-    <div class="col-md-4">
-        <h2>Técnicos</h2>
+    <div class="col-md-3">
+        <h3>Técnicos</h3>
         <p>
-            Podrá administrar la información de los técnicos (Consultar, Crear, Editar y Eliminar).
+            Podrá administrar la información de los técnicos.
         </p>
         <p>
             @Html.ActionLink("Ir >>>", "Index", "Technicians", new { area = "" }, new { @class = "btn btn-default", @style = "background-color:lightgray" })
@@ -20,8 +20,8 @@
         <!--<p><a class="btn btn-default" asp-action="Index" asp-controller="Technicians">Ir &raquo;</a></p>-->
     </div>
 
-    <div class="col-md-4">
-        <h2>Servicios</h2>
+    <div class="col-md-3">
+        <h3>Servicios</h3>
         <p>
             Podrá agendar servicios de reparación; así como administrar su información.
         </p>
@@ -31,13 +31,24 @@
         <!--<p><a class="btn btn-default" asp-action="Index" asp-controller="ServiceRequests">Ir &raquo;</a></p>-->
     </div>
 
-    <div class="col-md-4">
-        <h2>Reportes</h2>
+    <div class="col-md-3">
+        <h3>Reporte de servicios</h3>
         <p>
-            Obtenga el reporte de las horas trabajadas por cada uno de los técnicos.
+            Obtenga el reporte de la ejecución de todos los servicios registrados.
         </p>
         <p>
-            @Html.ActionLink("Ir >>>", "Index", "Reports", new { area = "" }, new { @class = "btn btn-default", @style = "background-color:lightgray" })
+            @Html.ActionLink("Ir >>>", "ServiceReport", "ServiceRequests", new { area = "" }, new { @class = "btn btn-default", @style = "background-color:lightgray" })
+        </p>
+        <!--<p><a class="btn btn-default" asp-action="Index" asp-controller="Reports">Ir &raquo;</a></p>-->
+    </div>
+
+    <div class="col-md-3">
+        <h3>Reporte de horas</h3>
+        <p>
+            Obtenga el reporte de horas de trabajo por cada uno de los técnicos.
+        </p>
+        <p>
+            @Html.ActionLink("Ir >>>", "ServiceReport", "ServiceRequests", new { area = "" }, new { @class = "btn btn-default", @style = "background-color:lightgray" })
         </p>
         <!--<p><a class="btn btn-default" asp-action="Index" asp-controller="Reports">Ir &raquo;</a></p>-->
     </div>

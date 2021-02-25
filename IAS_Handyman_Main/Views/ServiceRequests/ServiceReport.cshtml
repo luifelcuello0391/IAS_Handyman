@@ -1,0 +1,111 @@
+﻿@model IEnumerable<IAS_Handyman.Models.ServiceRequest>
+
+@{
+    ViewBag.Title = "Reporte de servicios";
+}
+
+<h2>Reporte de servicios ejecutados</h2>
+
+<p><b>Nota:</b> En este reporte se visualizarán todos los servicios que tengan el estado <b>"Ejecutado"</b>.</p>
+
+<table class="table">
+    <tr style="background-color:lightgray">
+        <th>
+            @Html.DisplayNameFor(model => model.Code)
+        </th>
+
+        <th>
+            @Html.Raw("Tipo de servicio")
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.CurrentStatus)
+        </th>
+
+        <th>
+            Identificación del técnico
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Responsable)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.StartDateTime)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.EndDateTime)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Hours)
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Code)
+    </td>
+
+    <td>
+        @Html.DisplayFor(modelItem => item.IsEmergencyString)
+    </td>
+
+    @if (item.CurrentStatus != null)
+    {
+        <td>
+            @Html.DisplayFor(modelItem => item.CurrentStatus.Name)
+        </td>
+    }
+    else
+    {
+        <td>
+            @Html.Raw("Generado")
+        </td>
+    }
+
+    @if (item.Responsable != null)
+    {
+        <td>
+            @Html.DisplayFor(modelItem => item.Responsable.Identification)
+        </td>
+    }
+    else
+    {
+        <td>
+            @Html.Raw("No asignado")
+        </td>
+    }
+
+    @if (item.Responsable != null)
+    {
+        <td>
+            @Html.DisplayFor(modelItem => item.Responsable.FullName)
+        </td>
+    }
+    else
+    {
+        <td>
+            @Html.Raw("No asignado")
+        </td>
+    }
+
+    <td>
+        @Html.DisplayFor(modelItem => item.StartDateTime)
+    </td>
+
+    <td>
+        @Html.DisplayFor(modelItem => item.EndDateTime)
+    </td>
+
+    <td>
+        @Html.DisplayFor(modelItem => item.Hours)
+    </td>
+
+</tr>
+    }
+
+</table>

@@ -182,6 +182,7 @@
     <Content Include="Views\ServiceRequests\Index.cshtml" />
     <Content Include="Views\ServiceRequests\TechnicianSelectionList.cshtml" />
     <Content Include="Views\ServiceRequests\TechnicianData.cshtml" />
+    <Content Include="Views\ServiceRequests\ServiceReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

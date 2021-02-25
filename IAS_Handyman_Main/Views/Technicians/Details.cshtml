@@ -26,6 +26,93 @@
         </dd>
     </dl>
 
+    @if(Model.Services != null && Model.Services.Count > 0)
+    {
+        <hr />
+        <h4>Servicios asignados</h4>
+        <hr />
+        <table class="table">
+            <tr style="background-color:lightgray">
+                <th></th>
+                <th>
+                    Código del servicio
+                </th>
+                <th>
+                    Tipo de servicio
+                </th>
+                <th>
+                    Programado para
+                </th>
+                <th>
+                    Estado del servicio
+                </th>
+                <th>
+                    Servicio solicitado
+                </th>
+            </tr>
+
+            @foreach(var item in Model.Services)
+            {
+                if(item != null)
+                {
+                    <tr>
+                            @if (item.CurrentStatus != null && item.CurrentStatus.Id < 2)
+                            {
+                                <td>
+                                    <input type="button" value="Atención" class="btn btn-primary" onclick="registerAttention(@item.Id)" />
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <input type="button" value="Atendido" class="btn btn-primary" style="background-color:lightgray" />
+                                </td>
+                            }
+
+
+                        <td>
+                            @item.Code
+                        </td>
+
+                        <td>
+                            @item.IsEmergencyString
+                        </td>
+
+                        @if (item.ScheduleDate != null)
+                        {
+                            <td>
+                                @item.ScheduleDate
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                Sin datos
+                            </td>
+                        }
+
+                        @if (item.CurrentStatus != null)
+                        {
+                            <td>
+                                @item.CurrentStatus.Name
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                Generada
+                            </td>
+                        }
+
+                        <td>
+                            @item.Description
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    }
+
     <hr/>
     <h4>Información adicional</h4>
     <hr />
@@ -59,3 +146,9 @@
     @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Regresar", "Index")
 </p>
+
+<script>
+    function registerAttention(id) {
+        window.location.href = '@Url.Action("Edit", "ServiceRequests")' + '/' + id;
+    }
+</script>

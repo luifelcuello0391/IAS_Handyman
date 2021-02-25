@@ -16,6 +16,12 @@ namespace IAS_Handyman_Main.Controllers
     {
         private DatabaseContext db = new DatabaseContext();
 
+        // GET: ServiceReport
+        public ActionResult ServiceReport()
+        {
+            return View("ServiceReport", db.Services.Where(x => x.CurrentStatus != null && x.CurrentStatus.Id == 2).ToList());
+        }
+
         // GET: ServiceRequests
         public ActionResult Index()
         {
@@ -91,6 +97,11 @@ namespace IAS_Handyman_Main.Controllers
                 serviceRequest.SelectedTechnicianId = serviceRequest.Responsable.Id;
             }
 
+            if(serviceRequest.CurrentStatus != null)
+            {
+                serviceRequest.SelectedCurrentStatusId = serviceRequest.CurrentStatus.Id;
+            }
+
             return View(serviceRequest);
         }
 
@@ -99,15 +110,103 @@ namespace IAS_Handyman_Main.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Code,Description,ScheduleDate,IsEmergency,StartDateTime,EndDateTime,Hours,CreationDateTime,ModificationDateTime,RegisterStatus,SelectedTechnicianId")] ServiceRequest serviceRequest)
+        public ActionResult Edit([Bind(Include = "Id,Code,Description,ScheduleDate,IsEmergency,StartDateTime,EndDateTime,Hours,CreationDateTime,ModificationDateTime,RegisterStatus,SelectedTechnicianId,StartTimeHour,StartTimeMinute,EndTimeHour,EndTimeMinute,SelectedCurrentStatusId")] ServiceRequest serviceRequest)
         {
             if (ModelState.IsValid)
             {
+                ViewBag.ErrorMessage = "";
+
+                // Obtains the current status
+                if(serviceRequest.SelectedCurrentStatusId != null)
+                {
+                    serviceRequest.CurrentStatus = db.ServiceStatuses.FirstOrDefault(x => x.Id == serviceRequest.SelectedCurrentStatusId);
+                }
+
                 if (serviceRequest.SelectedTechnicianId > 0)
                 {
                     if(serviceRequest.Responsable == null || serviceRequest.Responsable.Id != serviceRequest.SelectedTechnicianId)
                     {
                         serviceRequest.Responsable = db.Technicians.FirstOrDefault(x => x.Id == serviceRequest.SelectedTechnicianId);
+                    }
+                }
+
+                // Obtains the start date time
+                if (serviceRequest.StartTimeHour != null && serviceRequest.StartTimeMinute != null)
+                {
+                    if (serviceRequest.StartDateTime != null)
+                    {
+                        serviceRequest.StartDateTime = new DateTime(serviceRequest.StartDateTime.Value.Year,
+                                                                    serviceRequest.StartDateTime.Value.Month,
+                                                                    serviceRequest.StartDateTime.Value.Day,
+                                                                    serviceRequest.StartTimeHour.Value,
+                                                                    serviceRequest.StartTimeMinute.Value,
+                                                                    0);
+                    }
+                }
+                else
+                {
+                    if(serviceRequest.StartDateTime != null)
+                    {
+                        ViewBag.ErrorMessage = "No se han ingresado las horas o los minutos para la fecha de inicio de la atención";
+                        return View(serviceRequest);
+                    }
+                }
+
+                // Obtains the end date time
+                if (serviceRequest.EndTimeHour != null && serviceRequest.EndTimeMinute != null)
+                {
+                    if (serviceRequest.EndDateTime != null)
+                    {
+                        serviceRequest.EndDateTime = new DateTime(serviceRequest.EndDateTime.Value.Year,
+                                                                    serviceRequest.EndDateTime.Value.Month,
+                                                                    serviceRequest.EndDateTime.Value.Day,
+                                                                    serviceRequest.EndTimeHour.Value,
+                                                                    serviceRequest.EndTimeMinute.Value,
+                                                                    0);
+                    }
+                }
+                else
+                {
+                    if (serviceRequest.EndDateTime != null)
+                    {
+                        ViewBag.ErrorMessage = "No se han ingresado las horas o los minutos para la fecha de finalización de la atención";
+                        return View(serviceRequest);
+                    }
+                }
+
+                // Compare the dates, end date must be after than start date
+                if (serviceRequest.StartDateTime != null && serviceRequest.EndDateTime != null)
+                {
+                    if(serviceRequest.StartDateTime.Value.CompareTo(DateTime.Now) > 0)
+                    {
+                        ViewBag.ErrorMessage = "La fecha de inicio de la atención debe ser inferior o igual a la fecha actual";
+                        return View(serviceRequest);
+                    }
+
+                    if(serviceRequest.EndDateTime.Value.CompareTo(DateTime.Now) > 0)
+                    {
+                        ViewBag.ErrorMessage = "La fecha de finalización de la atención debe ser inferior o igual a la fecha actual";
+                        return View(serviceRequest);
+                    }
+
+                    if (serviceRequest.StartDateTime.Value.CompareTo(serviceRequest.EndDateTime.Value) >= 0)
+                    {
+                        ViewBag.ErrorMessage = "La fecha de inicio de la atención debe ser inferior a la fecha de finalización de la atención";
+                        return View(serviceRequest);
+                    }
+                }
+                else
+                {
+                    if(serviceRequest.StartDateTime != null)
+                    {
+                        ViewBag.ErrorMessage = "Debe especificar la fecha de finalización de la atención";
+                        return View(serviceRequest);
+                    }
+
+                    if (serviceRequest.EndDateTime != null)
+                    {
+                        ViewBag.ErrorMessage = "Debe especificar la fecha de inicio de la atención";
+                        return View(serviceRequest);
                     }
                 }
 
@@ -117,8 +216,11 @@ namespace IAS_Handyman_Main.Controllers
                     {
                         // Assigns the status "Ejecutado"
                         serviceRequest.CurrentStatus = db.ServiceStatuses.FirstOrDefault(x => x.Id == 2);
+
+                        TimeSpan dateDifference = serviceRequest.EndDateTime.Value.Subtract(serviceRequest.StartDateTime.Value);
+                        serviceRequest.Hours = (int)dateDifference.TotalHours;
                     }
-                    else if(serviceRequest.CurrentStatus == null)
+                    else if (serviceRequest.CurrentStatus == null)
                     {
                         // Assigns the status "Asignado"
                         serviceRequest.CurrentStatus = db.ServiceStatuses.FirstOrDefault(x => x.Id == 1);

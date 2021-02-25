@@ -54,15 +54,24 @@ namespace IAS_Handyman.Models
         public DateTime? EndDateTime { get; set; }
 
         [NotMapped]
-        public string StartTime { get; set; }
+        public int? StartTimeHour { get; set; }
 
         [NotMapped]
-        public string EndTime { get; set; }
+        public int? StartTimeMinute { get; set; }
+
+        [NotMapped]
+        public int? EndTimeHour { get; set; }
+
+        [NotMapped]
+        public int? EndTimeMinute { get; set; }
 
         [DisplayName("Horas empleadas")]
         public int Hours { get; set; }
 
         [NotMapped]
         public int? SelectedTechnicianId { get; set; }
+
+        [NotMapped]
+        public int? SelectedCurrentStatusId { get; set; }
     }
 }

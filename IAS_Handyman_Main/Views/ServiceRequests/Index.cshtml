@@ -9,7 +9,7 @@
 <p>
     @Html.ActionLink("Agendar servicio", "Create")
 </p>
-<p><b>Nota:</b> Sólo se podrán eliminar los servicios con estados <b>"Generado"</b> y <b>"Asignado"</b>, los servicios con cualquier otro estado, deberán ser cancelados en caso tal de no realizarse.<br/>Para gestionar o ejecutar un servicio agendado y asignado a un técnico, deberá ingresar a la edición.</p>
+<p><b>Nota:</b> Sólo se podrán eliminar los servicios con estados <b>"Generado"</b> y <b>"Asignado"</b>, los servicios con cualquier otro estado, deberán ser cancelados en caso tal de no realizarse.<br/>Para reportar la atención (ejecutar) o cancelar un servicio agendado y asignado a un técnico, deberá ingresar a la edición.</p>
 <table class="table">
     <tr style="background-color:lightgray">
         <th>
@@ -82,7 +82,7 @@
         @Html.DisplayFor(modelItem => item.Description)
     </td>
 
-    @if (@item.CurrentStatus == null || item.CurrentStatus.Id <= 2)
+    @if (@item.CurrentStatus == null || item.CurrentStatus.Id < 2)
     {
         <td>
             @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
