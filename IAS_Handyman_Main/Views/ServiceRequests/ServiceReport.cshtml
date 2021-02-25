@@ -43,69 +43,71 @@
         </th>
     </tr>
 
-    @foreach (var item in Model)
+    @if (Model != null && Model.Count() > 0)
     {
-<tr>
-    <td>
-        @Html.DisplayFor(modelItem => item.Code)
-    </td>
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
 
-    <td>
-        @Html.DisplayFor(modelItem => item.IsEmergencyString)
-    </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsEmergencyString)
+                </td>
 
-    @if (item.CurrentStatus != null)
-    {
-        <td>
-            @Html.DisplayFor(modelItem => item.CurrentStatus.Name)
-        </td>
+                @if (item.CurrentStatus != null)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CurrentStatus.Name)
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @Html.Raw("Generado")
+                    </td>
+                }
+
+                @if (item.Responsable != null)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Responsable.Identification)
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @Html.Raw("No asignado")
+                    </td>
+                }
+
+                @if (item.Responsable != null)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Responsable.FullName)
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @Html.Raw("No asignado")
+                    </td>
+                }
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDateTime)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDateTime)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Hours)
+                </td>
+
+            </tr>
+        }
     }
-    else
-    {
-        <td>
-            @Html.Raw("Generado")
-        </td>
-    }
-
-    @if (item.Responsable != null)
-    {
-        <td>
-            @Html.DisplayFor(modelItem => item.Responsable.Identification)
-        </td>
-    }
-    else
-    {
-        <td>
-            @Html.Raw("No asignado")
-        </td>
-    }
-
-    @if (item.Responsable != null)
-    {
-        <td>
-            @Html.DisplayFor(modelItem => item.Responsable.FullName)
-        </td>
-    }
-    else
-    {
-        <td>
-            @Html.Raw("No asignado")
-        </td>
-    }
-
-    <td>
-        @Html.DisplayFor(modelItem => item.StartDateTime)
-    </td>
-
-    <td>
-        @Html.DisplayFor(modelItem => item.EndDateTime)
-    </td>
-
-    <td>
-        @Html.DisplayFor(modelItem => item.Hours)
-    </td>
-
-</tr>
-    }
-
 </table>

@@ -16,6 +16,44 @@ namespace IAS_Handyman_Main.Controllers
     {
         private DatabaseContext db = new DatabaseContext();
 
+        // GET: WeeklyWorkHoursByTechnician
+        public ActionResult WeeklyWorkHoursByTechnician(int? year, int? week, int? technicianId)
+        {
+            if(year != null)
+            {
+                if(week != null)
+                {
+                    if(technicianId != null)
+                    {
+                        // TODO: Execute the report
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = "Debe seleccionar un técnico para generar el reporte";
+                    }
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Debe especificar la semana del año para generar el reporte";
+                }
+            }
+            else // year = null
+            {
+                if(week != null)
+                {
+                    ViewBag.ErrorMessage = "Debe especificar el año para generar el reporte";
+                }
+
+                // week = null
+                if(technicianId != null)
+                {
+                    ViewBag.ErrorMessage = "Debe especificar el año y la semana para generar el reporte";
+                }
+            }
+
+            return View("WeeklyWorkHoursByTechnician");
+        }
+
         // GET: ServiceReport
         public ActionResult ServiceReport()
         {

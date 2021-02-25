@@ -1,0 +1,168 @@
+﻿@model IEnumerable<IAS_Handyman.Models.WeeklyHoursTechnicianReport>
+
+@{
+    ViewBag.Title = "Reporte de horas semanales";
+}
+
+<h2>Reporte de horas semanales</h2>
+
+<table>
+    <tr>
+        <td>
+            <p>Año:</p>
+        </td>
+
+        <td>
+            <p style="margin-left:5px">Semana:</p>
+        </td>
+
+        <td>
+            <p style="margin-left:5px">Técnico:</p>
+        </td>
+
+        <td></td>
+
+        <td></td>
+    </tr>
+
+    <tr>
+        <td>
+            <input type="number" id="txt_year" min="1900" max="3000" style="width:80px" class="form-control" />
+        </td>
+
+        <td>
+            <input type="number" id="txt_week" min="1" max="52" style="margin-left:5px; width: 70px" class="form-control"/>
+        </td>
+
+        <td>
+            <div>
+                <table>
+                    <tr>
+                        <td>
+                            <input id="txt_technician_id" style="margin-left:5px; width: 150px" class="form-control" readonly />
+                        </td>
+
+                        <td>
+                            <input id="txt_technician" style="margin-left:5px; width: 280px" class="form-control" readonly />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+
+        <td>
+            <input type="button" class="btn btn-primary" value="Buscar técnico" style="margin-left:5px" onclick="showTechnicianModal()"/>
+        </td>
+
+        <td>
+            <input type="button" class="btn btn-primary" value="Generar reporte" style="margin-left:5px" />
+        </td>
+    </tr>
+</table>
+
+@if(ViewBag != null && ViewBag.ErrorMessage != null && !string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <p style="color:red">@ViewBag.ErrorMessage</p>
+}
+
+<h1></h1>
+
+<table class="table">
+    <tr style="background-color:lightgray">
+        <th>
+            Horas normales
+        </th>
+
+        <th>
+            Horas nocturnas
+        </th>
+
+        <th>
+            Horas dominicales
+        </th>
+
+        <th>
+            Horas normales (extra)
+        </th>
+
+        <th>
+            Horas nocturnas (extra)
+        </th>
+
+        <th>
+            Horas dominicales (extra)
+        </th>
+    </tr>
+
+    @if (Model != null && Model.Count() > 0)
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NormalHours)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.NightHours)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.SundayHours)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExtraNormalHours)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExtraNightHours)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExtraSundayHours)
+                </td>
+            </tr>
+        }
+    }
+</table>
+
+<hr/>
+<h4>Glosario</h4>
+<hr/>
+<p><b>Horas normales:</b> Horas trabajadas de lunes a sábado entre las 7:00 AM y las 8:00 PM</p>
+<p><b>Horas nocturnas:</b>  Horas trabajadas de lunes a sábado entre las 8:00 PM y las 7:00 AM</p>
+<p><b>Horas dominicales:</b> Horas trabajadas el día domingo</p>
+<p><b>Horas extras normales:</b> Horas trabajadas de lunes a sábado entre las 7:00 AM y las 8:00 PM, después de que el técnico ya ha trabajado 48 horas en la semana</p>
+<p><b>Horas extras nocturnas:</b> Horas trabajadas de lunes a sábado entre las 8:00 PM y las 7:00 AM, después de que el técnico ya ha trabajado 48 horas en la semana</p>
+<p><b>Horas extras dominicales:</b> Horas trabajadas el día domingo, después de que el técnico ya ha trabajado 48 horas en la semana</p>
+
+<div class="form-group">
+    <div class="modal fade" tabindex="-1" role="dialog" id="modalTechnicians" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script>
+    function showTechnicianModal() {
+        var url = "@Url.Action("GetTechnicians")";
+
+        // Show modal for techincians
+        $.get(url, "", function (data) {
+            $('.modal-content').html(data);
+            $("#modalTechnicians").modal('show');
+        });
+    }
+
+    function hideTechnicianmodal() {
+        $("#modalTechnicians").modal('hide');
+        $('.modal-content').html("");
+    }
+</script>
+

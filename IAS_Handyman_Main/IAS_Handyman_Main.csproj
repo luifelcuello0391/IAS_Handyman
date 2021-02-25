@@ -183,9 +183,11 @@
     <Content Include="Views\ServiceRequests\TechnicianSelectionList.cshtml" />
     <Content Include="Views\ServiceRequests\TechnicianData.cshtml" />
     <Content Include="Views\ServiceRequests\ServiceReport.cshtml" />
+    <Content Include="Views\ServiceRequests\WeeklyWorkHoursByTechnician.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Classes\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
