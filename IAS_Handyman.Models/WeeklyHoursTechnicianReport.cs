@@ -7,9 +7,10 @@ namespace IAS_Handyman.Models
 {
     public class WeeklyHoursTechnicianReport
     {
-        public int YearWeek { get; set; }
-        public DateTime WeekStartDate { get; set; } 
-        public DateTime WeekEndDate { get; set; }
+        public int? Year { get; set; }
+        public int? YearWeek { get; set; }
+        public DateTime? WeekStartDate { get; set; } 
+        public DateTime? WeekEndDate { get; set; }
         // Monday to saturday between 07:00 AM and 08:00 PM
         public int NormalHours { get; set; } = 0;
         // Monday to saturday between 08:00 PM and 07:00 AM
@@ -22,6 +23,7 @@ namespace IAS_Handyman.Models
         public int ExtraNightHours { get; set; } = 0;
         // Worked days on sunday after 48 hous of week work
         public int ExtraSundayHours { get; set; } = 0;
+        public int TechnicianId { get; set; }
         public string TechnicianIdentification { get; set; }
         public String TechnicianName { get; set; }
     }

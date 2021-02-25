@@ -16,16 +16,204 @@ namespace IAS_Handyman_Main.Controllers
     {
         private DatabaseContext db = new DatabaseContext();
 
+        private DateTime[] WeekDays(int Year, int WeekNumber)
+        {
+            //DateTime start = new DateTime(Year, 1, 1).AddDays(7 * WeekNumber);
+            //start = start.AddDays(-((int)start.DayOfWeek));
+            //return Enumerable.Range(1, 7).Select(num => start.AddDays(num)).ToArray();
+
+            DateTime start = new DateTime(Year, 1, 4);
+            start = start.AddDays(-((int)start.DayOfWeek));
+            start = start.AddDays(7 * (WeekNumber - 1));
+            return Enumerable.Range(1, 7).Select(num => start.AddDays(num)).ToArray();
+        }
+
+        private IEnumerable<WeeklyHoursTechnicianReport> OrganizeReportInformation(List<ServiceDataForReport> data, int year, int week, DateTime startdate, DateTime enddate)
+        {
+            // The list must ordered by attention start date
+            data = data.OrderBy(x => x.StartDateTime.Value).ToList();
+
+            if(data != null && data.Count > 0)
+            {
+                List<WeeklyHoursTechnicianReport> report = new List<WeeklyHoursTechnicianReport>();
+
+                WeeklyHoursTechnicianReport report_data = new WeeklyHoursTechnicianReport();
+                report_data.Year = year;
+                report_data.YearWeek = week;
+                report_data.TechnicianIdentification = data[0].Responsable.Identification;
+                report_data.TechnicianId = data[0].Responsable.Id;
+                report_data.TechnicianName = data[0].Responsable.FullName;
+                report_data.WeekStartDate = startdate;
+                report_data.WeekEndDate = enddate;
+
+                int SumatoryOfNormalHours = 0;
+                int SumatoryOfNightHours = 0;
+                int SumatoryOfSundayHours = 0;
+
+                int SumatoryOfExtraNormalHours = 0;
+                int SumatoryOfExtraNightHours = 0;
+                int sumatoryOfExtraSundayHours = 0;
+
+                // Obtains the normal hours
+                foreach(var register in data)
+                {
+                    if(register != null)
+                    {
+                        // Validates if the attention date range is a sunday
+                        if(register.StartDateTime.Value.DayOfWeek == DayOfWeek.Sunday || register.EndDateTime.Value.DayOfWeek == DayOfWeek.Sunday)
+                        {
+                            // Validates if the technician already has worked 48 hours in the week
+                            if((SumatoryOfNormalHours + SumatoryOfNightHours + SumatoryOfSundayHours) >= 48)
+                            {
+                                sumatoryOfExtraSundayHours += register.Hours;
+                            }
+                            else
+                            {
+                                if ((SumatoryOfNormalHours + SumatoryOfNightHours + SumatoryOfSundayHours + register.Hours) >= 48)
+                                {
+                                    int over48hours = (SumatoryOfNormalHours + SumatoryOfNightHours + SumatoryOfSundayHours + register.Hours) - 48;
+                                    int before48hours = 48 - (SumatoryOfNormalHours + SumatoryOfNightHours + SumatoryOfSundayHours);
+
+                                    SumatoryOfSundayHours += before48hours;
+                                    sumatoryOfExtraSundayHours += over48hours;
+                                }
+                                else
+                                {
+                                    SumatoryOfSundayHours += register.Hours;
+                                }
+                            }
+                        }
+                        else // Monday to saturday
+                        {
+                            // Validates if it is between 07:00 AM and 08:00 PM using the 24H format
+                            if(int.Parse(register.StartDateTime.Value.ToString("HH")) >= 7 && int.Parse(register.EndDateTime.Value.ToString("HH")) <= 20)
+                            {
+                                // Validates if the technician already has worked 48 hours in the week
+                                if ((SumatoryOfNormalHours + SumatoryOfNightHours + SumatoryOfSundayHours) >= 48)
+                                {
+                                    SumatoryOfExtraNormalHours += register.Hours;
+                                }
+                                else
+                                {
+                                    if((SumatoryOfNormalHours + SumatoryOfNightHours + SumatoryOfSundayHours + register.Hours) >= 48)
+                                    {
+                                        int over48hours = (SumatoryOfNormalHours + SumatoryOfNightHours + SumatoryOfSundayHours + register.Hours) - 48;
+                                        int before48hours = 48 - (SumatoryOfNormalHours + SumatoryOfNightHours + SumatoryOfSundayHours);
+
+                                        SumatoryOfNormalHours += before48hours;
+                                        SumatoryOfExtraNormalHours += over48hours;
+                                    }
+                                    else
+                                    {
+                                        SumatoryOfNormalHours += register.Hours;
+                                    }
+                                }
+
+                                if(SumatoryOfNormalHours > 48)
+                                {
+                                    SumatoryOfExtraNormalHours += (SumatoryOfNormalHours - 48);
+                                    SumatoryOfNormalHours = 48;
+                                }
+                            }
+                            else // 08:01 PM to 06:59 AM
+                            {
+                                // Validates if the technician already has worked 48 hours in the week
+                                if ((SumatoryOfNormalHours + SumatoryOfNightHours + SumatoryOfSundayHours) >= 48)
+                                {
+                                    SumatoryOfExtraNightHours += register.Hours;
+                                }
+                                else
+                                {
+                                    if ((SumatoryOfNormalHours + SumatoryOfNightHours + SumatoryOfSundayHours + register.Hours) >= 48)
+                                    {
+                                        int over48hours = (SumatoryOfNormalHours + SumatoryOfNightHours + SumatoryOfSundayHours + register.Hours) - 48;
+                                        int before48hours = 48 - (SumatoryOfNormalHours + SumatoryOfNightHours + SumatoryOfSundayHours);
+
+                                        SumatoryOfNightHours += before48hours;
+                                        SumatoryOfExtraNightHours += over48hours;
+                                    }
+                                    else
+                                    {
+                                        SumatoryOfNightHours += register.Hours;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Assigns the normal hours
+                report_data.NormalHours = SumatoryOfNormalHours;
+                report_data.NightHours = SumatoryOfNightHours;
+                report_data.SundayHours = SumatoryOfSundayHours;
+
+                // Assigns the extra hours
+                report_data.ExtraNormalHours = SumatoryOfExtraNormalHours;
+                report_data.ExtraNightHours = SumatoryOfExtraNightHours;
+                report_data.ExtraSundayHours = sumatoryOfExtraSundayHours;
+
+                report.Add(report_data);
+                return report as IEnumerable<WeeklyHoursTechnicianReport>;
+            }
+
+            return null;
+        }
+
         // GET: WeeklyWorkHoursByTechnician
         public ActionResult WeeklyWorkHoursByTechnician(int? year, int? week, int? technicianId)
         {
+            DateTime[] weekDays = null;
+
             if(year != null)
             {
                 if(week != null)
                 {
+                    // Obtains the corresponding dates for week
+                    weekDays = WeekDays(year.Value, week.Value);
+
                     if(technicianId != null)
                     {
-                        // TODO: Execute the report
+                        if (weekDays != null && weekDays.Length > 0)
+                        {
+                            weekDays[weekDays.Length - 1] = new DateTime(weekDays[weekDays.Length - 1].Year, weekDays[weekDays.Length - 1].Month, weekDays[weekDays.Length - 1].Day, 23, 59, 0);
+
+                            var weekStartDate = weekDays[0];
+                            var weekEndDate = weekDays[weekDays.Length - 1];
+
+                            // Execute the report
+                            var query = db.Services
+                                        // Obtains the services of technician that status = 'Ejecutado'
+                                        .Where(x => x.Responsable.Id == technicianId && x.CurrentStatus != null && x.CurrentStatus.Id == 2 &&
+                                        // AND startdatetime is between week start date AND week end date
+                                        ((x.StartDateTime.Value.CompareTo(weekStartDate) >= 0 && x.StartDateTime.Value.CompareTo(weekEndDate) <= 0) ||
+                                        // OR enddatetime is between week start date AND week end date
+                                        (x.EndDateTime.Value.CompareTo(weekStartDate) >= 0 && x.EndDateTime.Value.CompareTo(weekEndDate) <= 0))
+                                        )
+                                        .Select(r => new ServiceDataForReport()
+                                        {
+                                            Id = r.Id,
+                                            Code = r.Code,
+                                            CurrentStatus = r.CurrentStatus,
+                                            Description = r.Description,
+                                            EndDateTime = r.EndDateTime,
+                                            Hours = r.Hours,
+                                            IsEmergency = r.IsEmergency,
+                                            Responsable = r.Responsable,
+                                            ScheduleDate = r.ScheduleDate,
+                                            StartDateTime = r.StartDateTime
+                                        }).OrderBy(x => x.StartDateTime.Value).ToList();
+
+                            IEnumerable<WeeklyHoursTechnicianReport> report = OrganizeReportInformation(query, year.Value, week.Value, weekStartDate, weekEndDate);
+
+                            if (report != null && report.Count() > 0)
+                            {
+                                return View("WeeklyWorkHoursByTechnician", report);
+                            }
+                        }
+                        else
+                        {
+                            ViewBag.ErrorMessage = string.Format("No fué posible obtener el rango de fechas para el año {0} y la semana {1}", year.Value, week.Value);
+                        }
                     }
                     else
                     {
@@ -48,6 +236,31 @@ namespace IAS_Handyman_Main.Controllers
                 if(technicianId != null)
                 {
                     ViewBag.ErrorMessage = "Debe especificar el año y la semana para generar el reporte";
+                }
+            }
+
+            if(technicianId != null)
+            {
+                Technician technician = db.Technicians.FirstOrDefault(x => x.Id == technicianId);
+                if(technician != null)
+                {
+                    List<WeeklyHoursTechnicianReport> dummyReport = new List<WeeklyHoursTechnicianReport>();
+                    WeeklyHoursTechnicianReport data = new WeeklyHoursTechnicianReport();
+                    data.TechnicianId = technician.Id;
+                    data.TechnicianIdentification = technician.Identification;
+                    data.TechnicianName = technician.FullName;
+
+                    if(weekDays != null && weekDays.Length >= 2)
+                    {
+                        data.WeekStartDate = weekDays[0];
+                        data.WeekEndDate = weekDays[weekDays.Length - 1];
+                    }
+
+                    data.Year = year;
+                    data.YearWeek = week;
+
+                    dummyReport.Add(data);
+                    return View("WeeklyWorkHoursByTechnician", dummyReport);
                 }
             }
 
@@ -232,6 +445,18 @@ namespace IAS_Handyman_Main.Controllers
                         ViewBag.ErrorMessage = "La fecha de inicio de la atención debe ser inferior a la fecha de finalización de la atención";
                         return View(serviceRequest);
                     }
+
+                    if(serviceRequest.StartDateTime.Value.CompareTo(serviceRequest.ScheduleDate) < 0)
+                    {
+                        ViewBag.ErrorMessage = "La fecha de inicio de la atención no puede ser inferior a la fecha de programación del servicio";
+                        return View(serviceRequest);
+                    }
+
+                    if (serviceRequest.EndDateTime.Value.CompareTo(serviceRequest.ScheduleDate) < 0)
+                    {
+                        ViewBag.ErrorMessage = "La fecha de finalización de la atención no puede ser inferior a la fecha de programación del servicio";
+                        return View(serviceRequest);
+                    }
                 }
                 else
                 {
@@ -339,6 +564,25 @@ namespace IAS_Handyman_Main.Controllers
             }
 
             return PartialView("TechnicianData", null);
+        }
+
+        public string GetTechnicianData(int identification)
+        {
+            try
+            {
+                Technician technician = db.Technicians.FirstOrDefault(x => x.Id == identification);
+
+                if(technician != null)
+                {
+                    return string.Format("{0}||NAME||{1}", technician.Identification, technician.FullName);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error on ServiceRequestController.GetTechnician >> " + ex.ToString());
+            }
+
+            return null;
         }
 
         public async Task<ActionResult> GetTechnicians()

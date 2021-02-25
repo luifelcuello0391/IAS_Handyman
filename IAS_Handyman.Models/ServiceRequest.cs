@@ -11,7 +11,7 @@ namespace IAS_Handyman.Models
 {
     public class ServiceRequest : BaseModelData
     {
-        public ServiceRequest (){}
+        public ServiceRequest () {}
 
         // Table auto incremental id
         [Key]

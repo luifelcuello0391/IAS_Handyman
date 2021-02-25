@@ -5,6 +5,14 @@
 }
 
 <h2>Reporte de horas semanales</h2>
+@if (Model != null && Model.Count() > 0)
+{
+    <input hidden type="number" id="txt_selected_technician_id" value="@Model.First().TechnicianId" />
+}
+else
+{
+    <input hidden type="number" id="txt_selected_technician_id" />
+}
 
 <table>
     <tr>
@@ -27,11 +35,26 @@
 
     <tr>
         <td>
-            <input type="number" id="txt_year" min="1900" max="3000" style="width:80px" class="form-control" />
+            @if (Model != null && Model.Count() > 0 && Model.First().Year != null)
+            {
+                <input type="number" id="txt_year" min="1900" max="3000" style="width:80px" class="form-control" value="@Model.First().Year.Value" />
+            }
+            else
+            {
+                <input type="number" id="txt_year" min="1900" max="3000" style="width:80px" class="form-control" value="@DateTime.Now.Year" />
+            }
         </td>
 
         <td>
-            <input type="number" id="txt_week" min="1" max="52" style="margin-left:5px; width: 70px" class="form-control"/>
+            @if (Model != null && Model.Count() > 0 && Model.First().YearWeek != null)
+            {
+                <input type="number" id="txt_week" min="1" max="52" style="margin-left:5px; width: 70px" class="form-control" value="@Model.First().YearWeek.Value" />
+            }
+            else
+            {
+                <input type="number" id="txt_week" min="1" max="52" style="margin-left:5px; width: 70px" class="form-control" value="1" />
+            }
+
         </td>
 
         <td>
@@ -39,11 +62,25 @@
                 <table>
                     <tr>
                         <td>
-                            <input id="txt_technician_id" style="margin-left:5px; width: 150px" class="form-control" readonly />
+                            @if (Model != null && Model.Count() > 0)
+                            {
+                                <input id="txt_technician_id" style="margin-left:5px; width: 150px" class="form-control" readonly value="@Model.First().TechnicianIdentification" />
+                            }
+                            else
+                            {
+                                <input id="txt_technician_id" style="margin-left:5px; width: 150px" class="form-control" readonly />
+                            }
                         </td>
 
                         <td>
-                            <input id="txt_technician" style="margin-left:5px; width: 280px" class="form-control" readonly />
+                            @if (Model != null && Model.Count() > 0)
+                            {
+                                <input id="txt_technician" style="margin-left:5px; width: 280px" class="form-control" readonly value="@Model.First().TechnicianName" />
+                            }
+                            else
+                            {
+                                <input id="txt_technician" style="margin-left:5px; width: 280px" class="form-control" readonly />
+                            }
                         </td>
                     </tr>
                 </table>
@@ -51,17 +88,27 @@
         </td>
 
         <td>
-            <input type="button" class="btn btn-primary" value="Buscar técnico" style="margin-left:5px" onclick="showTechnicianModal()"/>
+            <input type="button" class="btn btn-primary" value="Buscar técnico" style="margin-left:5px" onclick="showTechnicianModal()" />
         </td>
 
         <td>
-            <input type="button" class="btn btn-primary" value="Generar reporte" style="margin-left:5px" />
+            <input type="button" class="btn btn-primary" value="Generar reporte" style="margin-left:5px" onclick="generateReport()" />
         </td>
     </tr>
 </table>
 
-@if(ViewBag != null && ViewBag.ErrorMessage != null && !string.IsNullOrEmpty(ViewBag.ErrorMessage))
+@if (Model != null && Model.Count() > 0)
 {
+    if (Model.First().WeekStartDate != null && Model.First().WeekEndDate != null)
+    {
+        <h4></h4>
+        <p><b>Rango de fecha del reporte: </b>@string.Format("Desde {0} hasta {1}", Model.First().WeekStartDate, Model.First().WeekEndDate)</p>
+    }
+}
+
+@if (ViewBag != null && ViewBag.ErrorMessage != null && !string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <h4></h4>
     <p style="color:red">@ViewBag.ErrorMessage</p>
 }
 
@@ -125,11 +172,39 @@
             </tr>
         }
     }
+    else
+    {
+        <tr>
+            <td>
+                0
+            </td>
+
+            <td>
+                0
+            </td>
+
+            <td>
+                0
+            </td>
+
+            <td>
+                0
+            </td>
+
+            <td>
+                0
+            </td>
+
+            <td>
+                0
+            </td>
+        </tr>
+    }
 </table>
 
-<hr/>
+<hr />
 <h4>Glosario</h4>
-<hr/>
+<hr />
 <p><b>Horas normales:</b> Horas trabajadas de lunes a sábado entre las 7:00 AM y las 8:00 PM</p>
 <p><b>Horas nocturnas:</b>  Horas trabajadas de lunes a sábado entre las 8:00 PM y las 7:00 AM</p>
 <p><b>Horas dominicales:</b> Horas trabajadas el día domingo</p>
@@ -163,6 +238,59 @@
     function hideTechnicianmodal() {
         $("#modalTechnicians").modal('hide');
         $('.modal-content').html("");
+    }
+
+    function selectTechnician(id)
+    {
+        hideTechnicianmodal();
+
+        var url = "@Url.Action("GetTechnicianData")";
+
+        // Obtains the technician data with register Id
+        $.get(url, { identification: id }, function (data) {
+            if (data != null)
+            {
+                var technician_data = data.split("||NAME||");
+
+                if (technician_data != null && technician_data.length > 1)
+                {
+                    $("#txt_technician_id").val(technician_data[0]);
+                    $("#txt_technician").val(technician_data[1]);
+                    $("#txt_selected_technician_id").val(id);
+                }
+            }
+        });
+    }
+
+    function generateReport() {
+        var _week = $("#txt_week").val();
+        var _year = $("#txt_year").val();
+        var _technician_id = $("#txt_selected_technician_id").val();
+
+        var url = '@Url.Action("WeeklyWorkHoursByTechnician", "ServiceRequests")';
+
+        // The parameters combination is to use the Controller validations and show the corresponding error message
+        if (_week != null)
+        {
+            if (_year != null)
+            {
+                if (_technician_id != null)
+                {
+                    url = '@Html.Raw(Url.Action("WeeklyWorkHoursByTechnician", "ServiceRequests", new { year = "__year__", week = "__week__", technicianId = "__technicianId__"}))';
+                }
+                else
+                {
+                    url = '@Html.Raw(Url.Action("WeeklyWorkHoursByTechnician", "ServiceRequests", new { year = "__year__", week = "__week__"}))';
+                }
+            }
+            else
+            {
+                url = '@Html.Raw(Url.Action("WeeklyWorkHoursByTechnician", "ServiceRequests", new { week = "__week__"}))';
+            }
+        }
+
+        var url_with_params = url.replace('__year__', _year).replace('__week__', _week).replace('__technicianId__', _technician_id);
+        window.location.href = url_with_params;
     }
 </script>
 
