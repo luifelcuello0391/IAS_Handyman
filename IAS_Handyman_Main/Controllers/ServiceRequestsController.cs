@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using IAS_Handyman.Models;
 using IAS_Handyman.Repository;
+using Newtonsoft.Json;
 
 namespace IAS_Handyman_Main.Controllers
 {
@@ -16,25 +17,33 @@ namespace IAS_Handyman_Main.Controllers
     {
         private DatabaseContext db = new DatabaseContext();
 
-        private DateTime[] WeekDays(int Year, int WeekNumber)
+        public DateTime[] WeekDays(int Year, int WeekNumber)
         {
-            //DateTime start = new DateTime(Year, 1, 1).AddDays(7 * WeekNumber);
-            //start = start.AddDays(-((int)start.DayOfWeek));
-            //return Enumerable.Range(1, 7).Select(num => start.AddDays(num)).ToArray();
-
             DateTime start = new DateTime(Year, 1, 4);
             start = start.AddDays(-((int)start.DayOfWeek));
             start = start.AddDays(7 * (WeekNumber - 1));
             return Enumerable.Range(1, 7).Select(num => start.AddDays(num)).ToArray();
         }
 
-        private IEnumerable<WeeklyHoursTechnicianReport> OrganizeReportInformation(List<ServiceDataForReport> data, int year, int week, DateTime startdate, DateTime enddate)
+        public IEnumerable<WeeklyHoursTechnicianReport> OrganizeReportInformation(List<ServiceDataForReport> data, int year, int week, DateTime startdate, DateTime enddate)
         {
-            // The list must ordered by attention start date
-            data = data.OrderBy(x => x.StartDateTime.Value).ToList();
-
             if(data != null && data.Count > 0)
             {
+                // The list must ordered by attention start date
+                data = data.OrderBy(x => x.StartDateTime.Value).ToList();
+
+                // The following lines extracts the executed services to serialize into a JSON and use it in the Unit test, comment for production
+                // Comment from here
+                //foreach (var service in data)
+                //{
+                //    if(service != null)
+                //    {
+                //        service.Responsable = null;
+                //    }
+                //}
+                //string testData = JsonConvert.SerializeObject(data);
+                // To here
+
                 List<WeeklyHoursTechnicianReport> report = new List<WeeklyHoursTechnicianReport>();
 
                 WeeklyHoursTechnicianReport report_data = new WeeklyHoursTechnicianReport();
