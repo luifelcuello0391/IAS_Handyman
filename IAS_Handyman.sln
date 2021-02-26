@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAS_Handyman.Models", "IAS_
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAS_Handyman_Main", "IAS_Handyman_Main\IAS_Handyman_Main.csproj", "{8F379018-756A-434D-B41F-1357EEE4018C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAS_Handyman.test", "IAS_Handyman.test\IAS_Handyman.test.csproj", "{74F32FF7-4590-49E9-B2AC-8275CA20CCEC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{8F379018-756A-434D-B41F-1357EEE4018C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F379018-756A-434D-B41F-1357EEE4018C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F379018-756A-434D-B41F-1357EEE4018C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74F32FF7-4590-49E9-B2AC-8275CA20CCEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74F32FF7-4590-49E9-B2AC-8275CA20CCEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74F32FF7-4590-49E9-B2AC-8275CA20CCEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74F32FF7-4590-49E9-B2AC-8275CA20CCEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

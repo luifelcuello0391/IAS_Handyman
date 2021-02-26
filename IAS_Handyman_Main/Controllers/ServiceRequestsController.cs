@@ -291,7 +291,7 @@ namespace IAS_Handyman_Main.Controllers
             {
                 return HttpNotFound();
             }
-            return View(serviceRequest);
+            return View("Details", serviceRequest);
         }
 
         // GET: ServiceRequests/Create
@@ -527,7 +527,7 @@ namespace IAS_Handyman_Main.Controllers
             {
                 return HttpNotFound();
             }
-            return View(serviceRequest);
+            return View("Delete", serviceRequest);
         }
 
         // POST: ServiceRequests/Delete/5
